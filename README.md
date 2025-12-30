@@ -21,3 +21,11 @@
   ```bash
   npm run build && npm start
   ```  
+- Проверка калькулятора:
+  ```bash
+  node dist/calculation-demo.js
+  ```  
+  - Проверка анализа бюджета:
+  ```bash
+  node dist/calculation-demo.js
+  ```  
