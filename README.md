@@ -37,3 +37,7 @@
   ```bash
   node dist/generics.js
   ```     
+ - Проверка BudgetTracker через namespace:
+  ```bash
+  node dist/budget-tracker.js
+  ```       

@@ -1,10 +1,24 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "commonjs",
+    "module": "none",
+    "moduleResolution": "node",
     "rootDir": "./src",
-    "outDir": "./dist",
+    "outFile": "./dist/budget-tracker.js",
     "strict": true,
     "esModuleInterop": true
-  }
+  },
+  "files": [
+    "src/interfaces/TransactionType.ts",
+    "src/interfaces/ITransaction.ts",
+    "src/interfaces/IAccount.ts",
+    "src/interfaces/ISummary.ts",
+    "src/interfaces/IAccountManager.ts",
+
+    "src/classes/Transaction.ts",
+    "src/classes/Account.ts",
+    "src/classes/AccountManager.ts",
+
+    "src/index.ts"
+  ]
 }
