@@ -33,3 +33,7 @@
   ```bash
   node dist/index.js
   ```    
+ - Проверка всех продуктов:
+  ```bash
+  node dist/generics.js
+  ```     
