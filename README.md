@@ -25,7 +25,11 @@
   ```bash
   node dist/calculation-demo.js
   ```  
-  - Проверка анализа бюджета:
+- Проверка анализа бюджета:
   ```bash
   node dist/calculation-demo.js
   ```  
+- Проверка списка бюджетов:
+  ```bash
+  node dist/index.js
+  ```    
