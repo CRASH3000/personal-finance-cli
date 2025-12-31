@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Account } from "./classes/Account.js";
 import { Transaction } from "./classes/Transaction.js";
 import { AccountManager } from "./classes/AccountManager.js";
@@ -13,7 +14,9 @@ async function main(): Promise<void> {
 
   personalAccount.addTransaction(transaction);
   personalAccount.addTransaction(new Transaction(200, "expense", "2023-01-05T00:00:00Z", "Продукты"));
-  personalAccount.addTransaction(new Transaction(150, "expense", "2023-01-09T00:00:00Z", "Коммунальные услуги"));
+  personalAccount.addTransaction(
+    new Transaction(150, "expense", "2023-01-09T00:00:00Z", "Коммунальные услуги")
+  );
 
   personalAccount.update({ name: "Основной счёт" });
 
@@ -29,11 +32,30 @@ async function main(): Promise<void> {
   console.log("\nТранзакции основного счёта:");
   personalAccount.getTransactions().forEach((t) => console.log(t.toString()));
 
+  console.log("Информация о счёте:");
+  console.log(personalAccount.getSummaryString());
+
+  // проверка LogMethod для removeTransactionById
+  const firstId = personalAccount.getTransactions()[0]?.id;
+  if (firstId) {
+    personalAccount.removeTransactionById(firstId);
+  }
+
   try {
     await personalAccount.exportTransactionsToCSV("main_account.csv");
-    console.log('\nCSV файл создан: main_account.csv');
+    console.log("\nCSV файл создан: main_account.csv");
   } catch (error: unknown) {
-    console.log("В процессе записи произошла ошибка", error instanceof Error ? error.message : String(error));
+    console.log(
+      "В процессе записи произошла ошибка",
+      error instanceof Error ? error.message : String(error)
+    );
+  }
+
+  // проверка ReadOnly декоратора 
+  try {
+    (personalAccount as any).id = "HACK";
+  } catch (e: unknown) {
+    console.log("id менять нельзя:", e instanceof Error ? e.message : String(e));
   }
 }
 
