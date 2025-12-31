@@ -1,3 +1,5 @@
+import type { Account } from "./classes";
+
 // Тип для типа транзакции
 export type TransactionType = "income" | "expense";
 
@@ -29,9 +31,9 @@ export interface ISummary {
 
 // Интерфейс менеджера счетов
 export interface IAccountManager {
-  addAccount(account: IAccount): void;
+  addAccount(account: Account): void;
   removeAccountById(accountId: number): boolean;
-  getAccounts(): IAccount[];
-  getAccountById(id: number): IAccount | undefined;
+  getAccounts(): Account[];
+  getAccountById(id: number): Account | undefined;
   getSummary(accountId: number): ISummary;
 }
