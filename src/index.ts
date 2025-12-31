@@ -1,39 +1,24 @@
-const personalAccount = new BudgetTracker.Account(1, "Личный бюджет");
+import { Account } from "./classes/Account.js";
+import { Transaction } from "./classes/Transaction.js";
+import { AccountManager } from "./classes/AccountManager.js";
+
+const personalAccount = new Account("Личный бюджет");
+
 personalAccount.addTransaction(
-  new BudgetTracker.Transaction(
-    1,
-    1000,
-    "income",
-    "2023-01-01T00:00:00Z",
-    "Зарплата"
-  )
+  new Transaction(1000, "income", "2023-01-01T00:00:00Z", "Зарплата")
 );
 personalAccount.addTransaction(
-  new BudgetTracker.Transaction(
-    2,
-    200,
-    "expense",
-    "2023-01-05T00:00:00Z",
-    "Продукты"
-  )
+  new Transaction(200, "expense", "2023-01-05T00:00:00Z", "Продукты")
 );
 personalAccount.addTransaction(
-  new BudgetTracker.Transaction(
-    3,
-    150,
-    "expense",
-    "2023-01-10T00:00:00Z",
-    "Коммунальные услуги"
-  )
+  new Transaction(150, "expense", "2023-01-10T00:00:00Z", "Коммунальные услуги")
 );
 
-const manager = new BudgetTracker.AccountManager();
+const manager = new AccountManager();
 manager.addAccount(personalAccount);
 
 console.log(String(personalAccount));
 console.log(`Общий баланс всех бюджетов: ${manager.balance} ₽`);
 
 console.log("\nТранзакции личного бюджета:");
-personalAccount
-  .getTransactions()
-  .forEach((t: BudgetTracker.ITransaction) => console.log(t.toString()));
+personalAccount.getTransactions().forEach((t) => console.log(t.toString()));

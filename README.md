@@ -21,23 +21,8 @@
   ```bash
   npm run build && npm start
   ```  
-- Проверка калькулятора:
+- Запуск демо бюджета (tsx):
   ```bash
-  node dist/calculation-demo.js
+  npm start
   ```  
-- Проверка анализа бюджета:
-  ```bash
-  node dist/calculation-demo.js
-  ```  
-- Проверка списка бюджетов:
-  ```bash
-  node dist/index.js
-  ```    
- - Проверка всех продуктов:
-  ```bash
-  node dist/generics.js
-  ```     
- - Проверка BudgetTracker через namespace:
-  ```bash
-  node dist/budget-tracker.js
-  ```       
+ё

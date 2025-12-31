@@ -1,11 +1,11 @@
-namespace BudgetTracker {
-  export interface ITransaction {
-    id: number;
-    amount: number;
-    type: TransactionType;
-    date: string;
-    description: string;
+import type { TransactionType } from "./TransactionType.js";
 
-    toString(): string;
-  }
+export interface ITransaction {
+  id: string;
+  amount: number;
+  type: TransactionType;
+  date: string; // ISO
+  description: string;
+
+  toString(): string;
 }
