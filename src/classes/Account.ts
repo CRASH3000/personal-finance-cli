@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import type { IAccount } from "../interfaces/IAccount.js";
 import type { ITransaction } from "../interfaces/ITransaction.js";
 import type { ISummary } from "../interfaces/ISummary.js";
+import type { AccountUpdate } from "../interfaces/utility-types.js";
 import { Transaction } from "./Transaction.js";
 import { formatCurrency } from "formatCurrency";
 
@@ -14,6 +15,17 @@ export class Account implements IAccount, ISummary {
   constructor(name: string) {
     this.id = uuidv4();
     this.name = name;
+  }
+
+  update(update: AccountUpdate): void {
+    // id менять нельзя
+    if (typeof update.id === "string" && update.id !== this.id) {
+      return;
+    }
+
+    if (typeof update.name === "string") {
+      this.name = update.name;
+    }
   }
 
   get income(): number {
@@ -39,12 +51,7 @@ export class Account implements IAccount, ISummary {
     }
 
     this.transactions.push(
-      new Transaction(
-        transaction.amount,
-        transaction.type,
-        transaction.date,
-        transaction.description
-      )
+      new Transaction(transaction.amount, transaction.type, transaction.date, transaction.description)
     );
   }
 

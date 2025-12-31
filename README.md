@@ -21,7 +21,7 @@
   ```bash
   npm run build && npm start
   ```  
-- Запуск демо бюджета (tsx):
+- Запуск приложения:
   ```bash
   npm start
   ```  
