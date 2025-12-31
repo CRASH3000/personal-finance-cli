@@ -25,4 +25,8 @@
   ```bash
   npm start
   ```  
-ё
+- Проверка, что появился файл main_account.csv:
+  ```bash
+  ls -la main_account.csv
+  cat main_account.csv
+  ```  

@@ -11,6 +11,8 @@
     "baseUrl": ".",
     "paths": {
       "formatCurrency": ["./src/lib/formatCurrency.js"]
-    }
+    },
+
+    "types": ["node"]
   }
 }

@@ -5,6 +5,8 @@ import type { ISummary } from "../interfaces/ISummary.js";
 import type { AccountUpdate } from "../interfaces/utility-types.js";
 import { Transaction } from "./Transaction.js";
 import { formatCurrency } from "formatCurrency";
+import { writeFile } from "fs/promises";
+import { escapeCsvValue } from "../utils/escapeCsvValue.js";
 
 export class Account implements IAccount, ISummary {
   public readonly id: string;
@@ -51,7 +53,12 @@ export class Account implements IAccount, ISummary {
     }
 
     this.transactions.push(
-      new Transaction(transaction.amount, transaction.type, transaction.date, transaction.description)
+      new Transaction(
+        transaction.amount,
+        transaction.type,
+        transaction.date,
+        transaction.description
+      )
     );
   }
 
@@ -73,6 +80,24 @@ export class Account implements IAccount, ISummary {
 
   getSummaryString(): string {
     return `${this.name}: баланс ${formatCurrency(this.balance, "₽")}, транзакций ${this.transactions.length}`;
+  }
+
+  async exportTransactionsToCSV(filename: string): Promise<void> {
+    const header: string = "id,amount,type,date,description";
+
+    const rows: string[] = this.transactions.map((t) => {
+      const cols: (string | number)[] = [t.id, t.amount, t.type, t.date, t.description];
+      return cols.map(escapeCsvValue).join(",");
+    });
+
+    const csv: string = [header, ...rows].join("\n");
+
+    try {
+      await writeFile(filename, csv, { encoding: "utf-8" });
+    } catch (error: unknown) {
+      const message: string = error instanceof Error ? error.message : String(error);
+      throw new Error(`Не удалось записать CSV в файл "${filename}": ${message}`);
+    }
   }
 
   toString(): string {
