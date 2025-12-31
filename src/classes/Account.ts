@@ -8,19 +8,9 @@ import { formatCurrency } from "formatCurrency";
 import { writeFile } from "fs/promises";
 import { escapeCsvValue } from "../utils/escapeCsvValue.js";
 
-import { LogClass } from "../decorators/LogClass.js";
-import { LogMethod } from "../decorators/LogMethod.js";
-import { ReadOnly } from "../decorators/ReadOnly.js";
-import { Metadata, getMetadataValue } from "../decorators/Metadata.js";
-
-@LogClass
 export class Account implements IAccount, ISummary {
-  @ReadOnly
   public id: string;
-
   public name: string;
-
-  @Metadata("description", "Массив транзакций счета")
   public transactions: Transaction[] = [];
 
   constructor(name: string) {
@@ -29,6 +19,7 @@ export class Account implements IAccount, ISummary {
   }
 
   update(update: AccountUpdate): void {
+    // id менять нельзя
     if (typeof update.id === "string" && update.id !== this.id) {
       return;
     }
@@ -54,7 +45,6 @@ export class Account implements IAccount, ISummary {
     return this.income - this.expenses;
   }
 
-  @LogMethod
   addTransaction(transaction: ITransaction): void {
     if (transaction instanceof Transaction) {
       this.transactions.push(transaction);
@@ -71,7 +61,6 @@ export class Account implements IAccount, ISummary {
     );
   }
 
-  @LogMethod
   removeTransactionById(transactionId: string): boolean {
     const index: number = this.transactions.findIndex((t) => t.id === transactionId);
     if (index === -1) return false;
@@ -80,7 +69,6 @@ export class Account implements IAccount, ISummary {
     return true;
   }
 
-  @LogMethod
   getTransactions(): ITransaction[] {
     return this.transactions;
   }
@@ -89,18 +77,9 @@ export class Account implements IAccount, ISummary {
     return { income: this.income, expenses: this.expenses, balance: this.balance };
   }
 
+  // упрощённая строка (по требованиям ДЗ-13)
   getSummaryString(): string {
-    const desc =
-      getMetadataValue<string>(
-        "description",
-        Object.getPrototypeOf(this),
-        "transactions"
-      ) ?? "";
-
-    return `${this.name}: баланс ${formatCurrency(
-      this.balance,
-      "₽"
-    )}, транзакций ${this.transactions.length}${desc ? ` | ${desc}` : ""}`;
+    return `${this.name}: баланс ${formatCurrency(this.balance, "₽")}`;
   }
 
   async exportTransactionsToCSV(filename: string): Promise<void> {
@@ -121,20 +100,22 @@ export class Account implements IAccount, ISummary {
     }
   }
 
+  // можно упростить (id обрезаем)
   toString(): string {
     const lines: string[] = [];
-    lines.push(`${this.name}`);
-    lines.push(`Список транзакций:`);
+    lines.push(this.getSummaryString());
 
     if (this.transactions.length === 0) {
-      lines.push("— (пусто)");
+      lines.push("Транзакции: — (пусто)");
       return lines.join("\n");
     }
 
+    lines.push("Транзакции:");
     for (let i = 0; i < this.transactions.length; i++) {
       const t = this.transactions[i];
+      const shortId: string = t.id.slice(0, 8);
       lines.push(
-        `${i + 1}) ${t.description} | ${t.type} ${formatCurrency(t.amount, "₽")} | ${t.prettyDate}`
+        `${i + 1}) #${shortId} ${t.description} | ${t.type} ${formatCurrency(t.amount, "₽")} | ${t.prettyDate}`
       );
     }
 

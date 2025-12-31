@@ -1,62 +1,23 @@
-import "reflect-metadata";
+import { ApplicationController } from "./classes/ApplicationController.js";
 import { Account } from "./classes/Account.js";
 import { Transaction } from "./classes/Transaction.js";
-import { AccountManager } from "./classes/AccountManager.js";
 
-async function main(): Promise<void> {
+const controller = new ApplicationController();
+setInitialState(controller);
+
+await controller.start();
+
+function setInitialState(controller: ApplicationController): void {
   const personalAccount = new Account("Личный бюджет");
-
-  const transaction = new Transaction(1000, "income", "2023-01-01T00:00:00Z", "Зарплата");
-  transaction.update({ amount: 1200 });
-
-  console.log("Обновлённая транзакция:");
-  console.log(transaction);
-
-  personalAccount.addTransaction(transaction);
+  personalAccount.addTransaction(new Transaction(1000, "income", "2023-01-01T00:00:00Z", "Зарплата"));
   personalAccount.addTransaction(new Transaction(200, "expense", "2023-01-05T00:00:00Z", "Продукты"));
-  personalAccount.addTransaction(
-    new Transaction(150, "expense", "2023-01-09T00:00:00Z", "Коммунальные услуги")
-  );
+  personalAccount.addTransaction(new Transaction(150, "expense", "2023-01-09T00:00:00Z", "Коммунальные услуги"));
+  controller.accountManager.addAccount(personalAccount);
 
-  personalAccount.update({ name: "Основной счёт" });
-
-  console.log("Обновлённый счёт:");
-  console.log(personalAccount);
-
-  const manager = new AccountManager();
-  manager.addAccount(personalAccount);
-
-  console.log(String(personalAccount));
-  console.log(`Общий баланс всех бюджетов: ${manager.balance} ₽`);
-
-  console.log("\nТранзакции основного счёта:");
-  personalAccount.getTransactions().forEach((t) => console.log(t.toString()));
-
-  console.log("Информация о счёте:");
-  console.log(personalAccount.getSummaryString());
-
-  // проверка LogMethod для removeTransactionById
-  const firstId = personalAccount.getTransactions()[0]?.id;
-  if (firstId) {
-    personalAccount.removeTransactionById(firstId);
-  }
-
-  try {
-    await personalAccount.exportTransactionsToCSV("main_account.csv");
-    console.log("\nCSV файл создан: main_account.csv");
-  } catch (error: unknown) {
-    console.log(
-      "В процессе записи произошла ошибка",
-      error instanceof Error ? error.message : String(error)
-    );
-  }
-
-  // проверка ReadOnly декоратора 
-  try {
-    (personalAccount as any).id = "HACK";
-  } catch (e: unknown) {
-    console.log("id менять нельзя:", e instanceof Error ? e.message : String(e));
-  }
+  const vacationAccount = new Account("Копилка на отпуск");
+  vacationAccount.addTransaction(new Transaction(500, "income", "2023-04-01T00:00:00Z", "Премия"));
+  vacationAccount.addTransaction(new Transaction(600, "income", "2023-01-01T00:00:00Z", "Возврат долга"));
+  vacationAccount.addTransaction(new Transaction(300, "expense", "2023-01-05T00:00:00Z", "Билеты на самолёт"));
+  vacationAccount.addTransaction(new Transaction(200, "expense", "2023-01-09T00:00:00Z", "Номер в отеле"));
+  controller.accountManager.addAccount(vacationAccount);
 }
-
-main();
